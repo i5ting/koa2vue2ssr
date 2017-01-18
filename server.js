@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const resolve = file => path.resolve(__dirname, file)
 // const express = require('express')
-const favicon = require('serve-favicon')
+// const favicon = require('serve-favicon')
 const serialize = require('serialize-javascript')
 
 const createBundleRenderer = require('vue-server-renderer').createBundleRenderer
@@ -15,7 +15,12 @@ const createBundleRenderer = require('vue-server-renderer').createBundleRenderer
 // const app = express()
 const Koa = require('koa');
 const app = new Koa();
+const serve = require('koa-static');
 
+
+var router = require('koa-router')();
+
+  
 // parse index.html template
 const html = (() => {
   const template = fs.readFileSync(resolve('./index.html'), 'utf-8')
@@ -48,8 +53,11 @@ function createRenderer (bundle) {
   })
 }
 
-app.use('/dist', express.static(resolve('./dist')))
-app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
+
+router.get('/dist', serve(resolve('./dist')));
+
+// app.use(serve(resolve('./dist')))
+// app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
 
 app.use((ctx, next) => {
   let res = ctx.res
@@ -90,6 +98,11 @@ app.use((ctx, next) => {
   })
 })
 
+
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
+  
 const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`)

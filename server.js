@@ -6,13 +6,15 @@ const isProd = process.env.NODE_ENV === 'production'
 const fs = require('fs')
 const path = require('path')
 const resolve = file => path.resolve(__dirname, file)
-const express = require('express')
+// const express = require('express')
 const favicon = require('serve-favicon')
 const serialize = require('serialize-javascript')
 
 const createBundleRenderer = require('vue-server-renderer').createBundleRenderer
 
-const app = express()
+// const app = express()
+const Koa = require('koa');
+const app = new Koa();
 
 // parse index.html template
 const html = (() => {
@@ -49,7 +51,9 @@ function createRenderer (bundle) {
 app.use('/dist', express.static(resolve('./dist')))
 app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
 
-app.get('*', (req, res) => {
+app.use((ctx, next) => {
+  let res = ctx.res
+  let req = ctx.req
   if (!renderer) {
     return res.end('waiting for compilation... refresh in a moment.')
   }

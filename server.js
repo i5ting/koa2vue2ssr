@@ -52,6 +52,7 @@ function createRenderer (bundle) {
   })
 }
 
+app.use(require('koa-bigpipe'))
 
 router.get('/dist', serve(resolve('./dist')));
 
@@ -70,13 +71,13 @@ app.use((ctx, next) => {
   const renderStream = renderer.renderToStream(context)
   let firstChunk = true
 
-  res.write(html.head)
+  ctx.write(html.head)
 
   renderStream.on('data', chunk => {
     if (firstChunk) {
       // embed initial store state
       if (context.initialState) {
-        res.write(
+        ctx.write(
           `<script>window.__INITIAL_STATE__=${
             serialize(context.initialState, { isJSON: true })
           }</script>`
@@ -84,11 +85,11 @@ app.use((ctx, next) => {
       }
       firstChunk = false
     }
-    res.write(chunk)
+    ctx.write(chunk)
   })
 
   renderStream.on('end', () => {
-    res.end(html.tail)
+    ctx.end(html.tail)
     console.log(`whole request: ${Date.now() - s}ms`)
   })
 

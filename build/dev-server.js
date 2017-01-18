@@ -13,14 +13,14 @@ module.exports = function setupDevServer (app, onUpdate) {
   )
 
   const clientCompiler = webpack(clientConfig)
-  app.use(require('webpack-dev-middleware')(clientCompiler, {
+  app.use(require('./koa2/dev')(clientCompiler, {
     publicPath: clientConfig.output.publicPath,
     stats: {
       colors: true,
       chunks: false
     }
   }))
-  app.use(require('webpack-hot-middleware')(clientCompiler))
+  app.use(require('./koa2/hot')(clientCompiler))
 
   // watch and update server renderer
   const serverCompiler = webpack(serverConfig)

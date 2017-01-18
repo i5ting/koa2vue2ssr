@@ -16,7 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.13.1",
-    "koa": "^2.0.0-alpha.7",
+    "koa": "^2.0.0",
+    "koa-bigpipe": "^1.0.6",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",
     "lru-cache": "^4.0.1",
@@ -52,6 +53,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^1.8.0",
+    "koa-webpack-middleware": "^1.0.3",
     "mocha": "^3.0.2",
     "phantomjs-prebuilt": "^2.1.10",
     "sinon": "^1.17.5",

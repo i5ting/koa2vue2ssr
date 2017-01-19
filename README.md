@@ -4,6 +4,8 @@
 
 ## Build Setup
 
+Node.js 4.x+
+
 ``` bash
 npm install
 npm run build

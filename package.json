@@ -17,7 +17,7 @@
   "dependencies": {
     "axios": "^0.13.1",
     "koa": "^2.0.0",
-    "koa-bigpipe": "^1.0.6",
+    "koa-bigpipe": "^1.0.9",
     "koa-favicon": "^2.0.0",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",

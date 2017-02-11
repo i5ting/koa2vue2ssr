@@ -1,7 +1,9 @@
 'use strict'
 
 process.env.VUE_ENV = 'server'
-const isProd = process.env.NODE_ENV === 'production'
+var isProd = process.env.NODE_ENV === 'production'
+
+isProd = true
 
 const fs = require('fs')
 const path = require('path')
@@ -13,9 +15,14 @@ const createBundleRenderer = require('vue-server-renderer').createBundleRenderer
 // const app = express()
 const Koa = require('koa');
 const app = new Koa();
-const serve = require('koa-static');
+var serve = require('koa-static-server');
 const favicon = require('koa-favicon')
-const router = require('koa-router')();
+
+app.use(serve({rootDir: './dist', rootPath: '/dist'}))
+
+app.use(require('koa-bigpipe'))
+// app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
+//
 
 // parse index.html template
 const html = (() => {
@@ -49,14 +56,12 @@ function createRenderer (bundle) {
   })
 }
 
-app.use(require('koa-bigpipe'))
-app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
-
-router.get('/dist', serve(resolve('./dist')));
-
 app.use((ctx, next) => {
   let res = ctx.res
   let req = ctx.req
+    
+  console.log('ctx.path = ' + ctx.path)  
+    
   if (!renderer) {
     return res.end('waiting for compilation... refresh in a moment.')
   }
@@ -65,6 +70,8 @@ app.use((ctx, next) => {
   const context = { url: req.url }
   const renderStream = renderer.renderToStream(context)
   let firstChunk = true
+
+  console.log(context)
 
   ctx.write(html.head)
 
@@ -93,11 +100,6 @@ app.use((ctx, next) => {
   })
 })
 
-
-app
-  .use(router.routes())
-  .use(router.allowedMethods());
-  
 const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`)
